@@ -1,7 +1,7 @@
-const Users = require('../../user/user');
+const Users = require('../../user/sql');
 
 // Handle GET request for /users
 // Returns a list of all users
-module.exports = (req, res) => {
-    res.end(JSON.stringify(Users.getAll()));
+module.exports = async (req, res) => {
+    res.end(JSON.stringify(await Users.getAll()));
 }

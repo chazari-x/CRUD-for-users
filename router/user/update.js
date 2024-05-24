@@ -1,4 +1,4 @@
-const Users = require('../../user/user');
+const Users = require('../../user/sql');
 
 // Handle PUT request for /users/:id
 // body: {name: string, email: string}
@@ -15,21 +15,23 @@ module.exports = (req, res, userId) => {
         body += chunk;
     });
 
-    req.on('end', () => {
-        const parsedBody = new URLSearchParams(body);
-        const name = parsedBody.get('name');
-        const email = parsedBody.get('email');
-        if (!name && !email) {
+    req.on('end', async () => {
+        let user = {};
+        for (const [key, value] of new URLSearchParams(body)) {
+            user[key] = value;
+        }
+
+        if (user.name === "") {
             res.writeHead(400);
-            res.end(JSON.stringify({ message: 'Name or email is required' }));
+            res.end(JSON.stringify({message: 'Bad request'}));
             return;
         }
 
-        if (Users.update(userId, { name, email })) {
-            res.end(JSON.stringify({ message: 'User updated' }));
+        if (await Users.update(userId, user)) {
+            res.end(JSON.stringify({message: 'User updated'}));
         } else {
             res.writeHead(404);
-            res.end(JSON.stringify({ message: 'User not found' }));
+            res.end(JSON.stringify({message: 'User not found'}));
         }
     });
 }

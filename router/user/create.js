@@ -1,4 +1,4 @@
-const Users = require('../../user/user');
+const Users = require('../../user/sql');
 
 // Handle POST request for /users
 // body: {name: string, email: string}
@@ -9,17 +9,29 @@ module.exports = (req, res) => {
         body += chunk;
     });
 
-    req.on('end', () => {
-        const parsedBody = new URLSearchParams(body);
-        const name = parsedBody.get('name');
-        const email = parsedBody.get('email');
-        if (!name || !email) {
+    req.on('end', async () => {
+        let user = {};
+        for (const [key, value] of new URLSearchParams(body)) {
+            if (value) {
+                user[key] = value;
+            }
+        }
+
+        if (!user.name) {
             res.writeHead(400);
-            res.end(JSON.stringify({ message: 'Name and email are required' }));
+            res.end(JSON.stringify({message: 'Bad request'}));
+            return;
+        }
+
+        const id = await Users.create(user)
+
+        if (id <= 0) {
+            res.writeHead(400);
+            res.end(JSON.stringify({message: 'Bad request'}));
             return;
         }
 
         res.writeHead(201);
-        res.end(JSON.stringify({ message: 'User created', id: Users.create({ name, email })}));
+        res.end(JSON.stringify({message: 'User created', id: id}));
     });
 }
