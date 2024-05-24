@@ -1,0 +1,23 @@
+{
+  "name": "crud-for-users",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chazari-x/CRUD-for-users.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chazari-x/CRUD-for-users/issues"
+  },
+  "homepage": "https://github.com/chazari-x/CRUD-for-users#readme",
+  "description": "",
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}
